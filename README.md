@@ -60,8 +60,6 @@ pip install -r requirements.txt
 
 ### Запуск vLLM сервера
 
-vLLM позволяет ускорить инференс в 2-5 раз по сравнению с HuggingFace Transformers.
-
 #### Для базовой модели:
 
 ```bash
@@ -82,55 +80,6 @@ vllm serve normoldaki31/dots-ocr-finetuned \
   --port 8001
 ```
 
-**Примечание:** Модели автоматически скачаются из Hugging Face Hub при первом запуске.
-
-#### Проверка работы сервера:
-
-```bash
-# Проверка здоровья сервера
-curl http://localhost:8000/health
-
-# Список доступных моделей
-curl http://localhost:8000/v1/models
-```
-
-#### Запуск в фоне:
-
-```bash
-nohup vllm serve normoldaki31/dots-ocr-finetuned \
-  --trust-remote-code \
-  --async-scheduling \
-  --gpu-memory-utilization 0.5 \
-  --port 8001 > vllm.log 2>&1 &
-
-# Просмотр логов
-tail -f vllm.log
-```
-
-### Использование ноутбуков для инференса
-
-1. Откройте ноутбук из папки `inference/`:
-   - `colab_inference_default.ipynb` - для базовой модели
-   - `colab_inference_merged.ipynb` - для дообученной модели
-
-2. Установите путь к модели:
-   ```python
-   # Для базовой модели
-   MODEL_PATH = "rednote-hilab/dots.ocr"
-   
-   # Для дообученной модели
-   MODEL_PATH = "normoldaki31/dots-ocr-finetuned"
-   ```
-
-3. Если используете vLLM, установите:
-   ```python
-   USE_VLLM = True
-   VLLM_SERVER_IP = "localhost"
-   VLLM_SERVER_PORT = 8000  # или 8001 для дообученной модели
-   ```
-
-4. Запустите ячейки по порядку
-
 ## Оценка через бенчмарки
 
 Для оценки производительности моделей используется форк [lmms-eval](https://github.com/Zagorulko-Ivan6592/lmms-eval) с поддержкой дополнительных бенчмарков.
@@ -144,10 +93,6 @@ pip install -e .
 ```
 
 ### Запуск бенчмарков
-
-**1. Запустите vLLM сервер** (см. раздел "Запуск vLLM сервера" выше)
-
-**2. Запустите оценку:**
 
 Для базовой модели (порт 8000):
 ```bash
