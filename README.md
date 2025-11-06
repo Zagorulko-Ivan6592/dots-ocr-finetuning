@@ -46,4 +46,162 @@
 
 *График сравнения метрик базовой и дообученной модели. График будет обновлен после завершения всех бенчмарков.*
 
+### Ключевые улучшения
 
+- **OCRBench**: улучшение точности распознавания текста
+- **OCRBench v2**: улучшение на обновленном бенчмарке
+- **MWS-Vision-Bench**: улучшение на русскоязычных документах
+
+**Детальные результаты** доступны в папке `results/` после запуска бенчмарков.
+
+## Быстрый старт
+
+### Установка зависимостей
+
+```bash
+pip install -r requirements.txt
+```
+
+Основные зависимости:
+- `torch>=2.1.0` - PyTorch
+- `transformers>=4.35.0` - HuggingFace Transformers
+- `peft>=0.7.0` - LoRA адаптеры
+- `qwen-vl-utils` - утилиты для Qwen-VL
+- `pymupdf>=1.23.0` - обработка PDF
+- `vllm>=0.11.0` - опционально, для ускорения инференса
+- `matplotlib>=3.5.0` - для визуализации результатов
+- `numpy>=1.21.0` - для работы с данными
+
+### Запуск vLLM сервера
+
+vLLM позволяет ускорить инференс в 2-5 раз по сравнению с HuggingFace Transformers.
+
+#### Для базовой модели:
+
+```bash
+vllm serve rednote-hilab/dots.ocr \
+  --trust-remote-code \
+  --async-scheduling \
+  --gpu-memory-utilization 0.5 \
+  --port 8000
+```
+
+#### Для дообученной модели:
+
+```bash
+vllm serve normoldaki31/dots-ocr-finetuned \
+  --trust-remote-code \
+  --async-scheduling \
+  --gpu-memory-utilization 0.5 \
+  --port 8001
+```
+
+**Примечание:** Модели автоматически скачаются из Hugging Face Hub при первом запуске.
+
+#### Проверка работы сервера:
+
+```bash
+# Проверка здоровья сервера
+curl http://localhost:8000/health
+
+# Список доступных моделей
+curl http://localhost:8000/v1/models
+```
+
+#### Запуск в фоне:
+
+```bash
+nohup vllm serve normoldaki31/dots-ocr-finetuned \
+  --trust-remote-code \
+  --async-scheduling \
+  --gpu-memory-utilization 0.5 \
+  --port 8001 > vllm.log 2>&1 &
+
+# Просмотр логов
+tail -f vllm.log
+```
+
+### Использование ноутбуков для инференса
+
+1. Откройте ноутбук из папки `inference/`:
+   - `colab_inference_default.ipynb` - для базовой модели
+   - `colab_inference_merged.ipynb` - для дообученной модели
+
+2. Установите путь к модели:
+   ```python
+   # Для базовой модели
+   MODEL_PATH = "rednote-hilab/dots.ocr"
+   
+   # Для дообученной модели
+   MODEL_PATH = "normoldaki31/dots-ocr-finetuned"
+   ```
+
+3. Если используете vLLM, установите:
+   ```python
+   USE_VLLM = True
+   VLLM_SERVER_IP = "localhost"
+   VLLM_SERVER_PORT = 8000  # или 8001 для дообученной модели
+   ```
+
+4. Запустите ячейки по порядку
+
+## Оценка через бенчмарки
+
+Для оценки производительности моделей используется форк [lmms-eval](https://github.com/Zagorulko-Ivan6592/lmms-eval) с поддержкой дополнительных бенчмарков.
+
+### Установка lmms-eval
+
+```bash
+git clone https://github.com/Zagorulko-Ivan6592/lmms-eval
+cd lmms-eval
+pip install -e .
+```
+
+### Запуск бенчмарков
+
+**1. Запустите vLLM сервер** (см. раздел "Запуск vLLM сервера" выше)
+
+**2. Запустите оценку:**
+
+Для базовой модели (порт 8000):
+```bash
+python -m lmms_eval \
+  --model openai_compatible \
+  --model_args "model_version=rednote-hilab/dots.ocr,base_url=http://localhost:8000/v1,api_key=dummy-key" \
+  --tasks ocrbench \
+  --batch_size 1 \
+  --log_samples \
+  --output_path ./results/dots_ocr_base_ocrbench
+```
+
+Для дообученной модели (порт 8001):
+```bash
+python -m lmms_eval \
+  --model openai_compatible \
+  --model_args "model_version=normoldaki31/dots-ocr-finetuned,base_url=http://localhost:8001/v1,api_key=dummy-key" \
+  --tasks ocrbench \
+  --batch_size 1 \
+  --log_samples \
+  --output_path ./results/dots_ocr_finetuned_ocrbench
+```
+
+### Доступные бенчмарки
+
+- `ocrbench` - OCRBench (стандартный бенчмарк для OCR)
+- `ocrbench_v2` - OCRBench v2 (обновленная версия)
+- `mws_vision_bench_validation` - MWS-Vision-Bench (русскоязычный бенчмарк)
+
+### Сравнение результатов
+
+После запуска бенчмарков для обеих моделей используйте скрипт для сравнения:
+
+```bash
+python compare_benchmarks.py \
+  --base_results ./results/dots_ocr_base_* \
+  --finetuned_results ./results/dots_ocr_finetuned_* \
+  --output ./benchmark_comparison.png
+```
+
+Или используйте ноутбук `compare_benchmarks.ipynb` для интерактивной визуализации.
+
+**Подробная инструкция:** См. [`HOW_TO_RUN_BENCHMARKS.md`](./HOW_TO_RUN_BENCHMARKS.md)
