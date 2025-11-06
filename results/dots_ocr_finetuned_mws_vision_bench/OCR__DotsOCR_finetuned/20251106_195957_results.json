@@ -1,0 +1,119 @@
+{
+  "results": {
+    "mws_vision_bench_validation": {
+      "alias": "mws_vision_bench_validation",
+      "prediction,none": [],
+      "prediction_stderr,none": [],
+      "ground_truth,none": [],
+      "ground_truth_stderr,none": [],
+      "task_type,none": [],
+      "task_type_stderr,none": [],
+      "raw_prediction,none": [],
+      "raw_prediction_stderr,none": []
+    }
+  },
+  "group_subtasks": {
+    "mws_vision_bench_validation": []
+  },
+  "configs": {
+    "mws_vision_bench_validation": {
+      "task": "mws_vision_bench_validation",
+      "dataset_path": "MTSAIR/MWS-Vision-Bench",
+      "dataset_kwargs": {
+        "token": true
+      },
+      "test_split": "train",
+      "full_docs": false,
+      "process_results_use_image": false,
+      "doc_to_visual": "<function mws_vision_bench_doc_to_visual at 0x7f0de8bf8900>",
+      "doc_to_text": "<function mws_vision_bench_doc_to_text at 0x7f0de8bf9080>",
+      "doc_to_target": "answers",
+      "process_results": "<function mws_vision_bench_process_results at 0x7f0de8bf9800>",
+      "description": "",
+      "target_delimiter": " ",
+      "fewshot_delimiter": "\n\n",
+      "num_fewshot": 0,
+      "metric_list": [
+        {
+          "metric": "mws_vision_bench_accuracy",
+          "aggregation": "<function mws_vision_bench_aggregate_results at 0x7f0de8bf8720>",
+          "higher_is_better": true
+        }
+      ],
+      "output_type": "generate_until",
+      "generation_kwargs": {
+        "until": [
+          "ASSISTANT:"
+        ],
+        "max_new_tokens": 1024,
+        "temperature": 0.0,
+        "top_p": 1.0,
+        "num_beams": 1,
+        "do_sample": false
+      },
+      "repeats": 1,
+      "should_decontaminate": false,
+      "lmms_eval_specific_kwargs": {
+        "default": {
+          "pre_prompt": "",
+          "post_prompt": "\nОтветьте точно в соответствии с инструкциями в вопросе."
+        },
+        "pre_prompt": "",
+        "post_prompt": "\nОтветьте точно в соответствии с инструкциями в вопросе."
+      },
+      "model_specific_generation_kwargs": {
+        "llava": {
+          "image_aspect_ratio": "original"
+        }
+      }
+    }
+  },
+  "versions": {
+    "mws_vision_bench_validation": "Yaml"
+  },
+  "n-shot": {
+    "mws_vision_bench_validation": 0
+  },
+  "higher_is_better": {
+    "mws_vision_bench_validation": {
+      "mws_vision_bench_accuracy": true
+    }
+  },
+  "n-samples": {
+    "mws_vision_bench_validation": {
+      "original": 1302,
+      "effective": 1302
+    }
+  },
+  "config": {
+    "model": "openai_compatible",
+    "model_args": "model_version=/home/jovyan/kurkin/geo_bench_zagorulko/OCR/DotsOCR_finetuned,base_url=http://localhost:8001/v1,api_key=dummy-key",
+    "batch_size": "1",
+    "batch_sizes": [],
+    "device": null,
+    "use_cache": null,
+    "limit": null,
+    "bootstrap_iters": 100000,
+    "gen_kwargs": "",
+    "random_seed": 0,
+    "numpy_seed": 1234,
+    "torch_seed": 1234,
+    "fewshot_seed": 1234
+  },
+  "git_hash": "6df27f0",
+  "date": "20251106_195957",
+  "task_hashes": {
+    "mws_vision_bench_validation": "1a695a97ef842b938a6d1122beabd4b16771f2408464a52bfe8d42f3d1c7a735"
+  },
+  "model_source": "openai_compatible",
+  "model_name": "/home/jovyan/kurkin/geo_bench_zagorulko/OCR/DotsOCR_finetuned",
+  "model_name_sanitized": "OCR__DotsOCR_finetuned",
+  "system_instruction": null,
+  "system_instruction_sha": null,
+  "fewshot_as_multiturn": false,
+  "chat_template": null,
+  "chat_template_sha": null,
+  "start_time": 12866929.058078852,
+  "end_time": 12872585.484893812,
+  "total_evaluation_time_seconds": "5656.426814960316"
+}
