@@ -21,10 +21,10 @@ requests>=2.28.0
 typing-extensions>=4.12.2
 
 # Optional: PDF reconstruction
-# weasyprint>=59.0  # Requires system dependencies (cairo, pango, etc.)
+# weasyprint>=59.0  
 
 # Optional: vLLM for faster inference
-# vllm>=0.11.0  # Requires compatible PyTorch version
+# vllm>=0.11.0  
 
 # For benchmark comparison and visualization
 matplotlib>=3.5.0
